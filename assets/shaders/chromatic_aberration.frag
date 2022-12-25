@@ -4,14 +4,18 @@ precision mediump float;
 
 #include <flutter/runtime_effect.glsl>
 
-layout(location = 0) uniform vec2 imageSize;
-layout(location = 1) uniform vec2 imageOffset;
-layout(location = 2) uniform float aberrationWidth;
-layout(location = 3) uniform sampler2D image;
+layout(location = 0) uniform float imageSizeX;
+layout(location = 1) uniform float imageSizeY;
+layout(location = 2) uniform float imageOffsetX;
+layout(location = 3) uniform float imageOffsetY;
+layout(location = 4) uniform float aberrationWidth;
+layout(location = 5) uniform sampler2D image;
 
 out vec4 fragColor;
 
 void main() {
+  vec2 imageSize = vec2(imageSizeX, imageSizeY);
+  vec2 imageOffset = vec2(imageOffsetX, imageOffsetY);
   vec2 uv = (FlutterFragCoord().xy - imageOffset) / imageSize;
   float pixelWidth = 1.0 / imageSize.x;
   vec2 aberration = vec2(pixelWidth * aberrationWidth, 0.0);

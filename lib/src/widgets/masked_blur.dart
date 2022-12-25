@@ -43,16 +43,20 @@ class _MaskedBlurState extends State<MaskedBlur> {
     final pictureRecorder = ui.PictureRecorder();
     final canvas = Canvas(pictureRecorder);
 
-    final wipeMask = _mask;
-    if (wipeMask != null) {
+    final mask = _mask;
+    if (mask != null) {
       canvas.drawImageRect(
-        wipeMask,
-        Offset.zero &
-            Size(wipeMask.width.toDouble(), wipeMask.height.toDouble()),
+        mask,
+        Offset.zero & Size(mask.width.toDouble(), mask.height.toDouble()),
         Offset.zero & size,
         Paint(),
       );
-      wipeMask.dispose();
+      mask.dispose();
+    } else {
+      canvas.drawRect(
+        Offset.zero & size,
+        Paint()..color = Colors.transparent,
+      );
     }
 
     paint(canvas);

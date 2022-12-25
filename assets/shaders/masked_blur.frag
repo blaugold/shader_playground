@@ -4,10 +4,12 @@ precision mediump float;
 
 #include <flutter/runtime_effect.glsl>
 
-layout(location = 0) uniform vec2 imageSize;
-layout(location = 1) uniform vec2 imageOffset;
-layout(location = 2) uniform sampler2D image;
-layout(location = 3) uniform sampler2D wipeMask;
+layout(location = 0) uniform float imageSizeX;
+layout(location = 1) uniform float imageSizeY;
+layout(location = 2) uniform float imageOffsetX;
+layout(location = 3) uniform float imageOffsetY;
+layout(location = 4) uniform sampler2D image;
+layout(location = 5) uniform sampler2D mask;
 
 out vec4 fragColor;
 
@@ -21,7 +23,7 @@ float blurWeight(float i) {
   }
 }
 
-vec4 blur(vec2 uv) {
+vec4 blur(vec2 uv, vec2 imageSize) {
   vec2 pixelSize = 1.0 / imageSize.xy;
   vec2 center = vec2(blurSize / 2.0);
 
@@ -45,13 +47,15 @@ vec4 blur(vec2 uv) {
 }
 
 void main() {
+  vec2 imageSize = vec2(imageSizeX, imageSizeY);
+  vec2 imageOffset = vec2(imageOffsetX, imageOffsetY);
   vec2 uv = (FlutterFragCoord().xy - imageOffset) / imageSize;
-  vec4 maskColor = texture(wipeMask, uv);
+  vec4 maskColor = texture(mask, uv);
 
   if (maskColor.a == 1.0) {
     fragColor = texture(image, uv);
   } else {
-    fragColor = blur(uv);
+    fragColor = blur(uv, imageSize);
   }
 }
 
